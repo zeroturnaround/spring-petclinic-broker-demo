@@ -49,3 +49,7 @@ out/
 _site/
 *.css
 !petclinic.css
+/broker/jrebel-dist-nosetup.zip
+/broker/jr-ide-intellij-nightly.zip
+/broker/broker.jar
+/broker/jrebel/
