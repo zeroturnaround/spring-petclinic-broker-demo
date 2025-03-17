@@ -1,0 +1,17 @@
+services:
+  petclinic:
+    image: docker.io/library/spring-petclinic:3.4.0-SNAPSHOT
+    volumes:
+      - ./dist/jrebel:/jrebel # JREBEL agent
+    ports:
+      - '8080:8080'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - |
+        JAVA_TOOL_OPTIONS=
+        -XX:MaxMetaspaceSize=256M
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+        -agentpath:/jrebel/lib/libjrebel64.so 
+        -Drebel.broker.url=http://host.docker.internal:7000/zone/demo
+        -Drebel.broker.jvm_name=petclinic

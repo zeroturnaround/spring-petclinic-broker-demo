@@ -53,3 +53,4 @@ _site/
 /broker/jr-ide-intellij-nightly.zip
 /broker/broker.jar
 /broker/jrebel/
+/broker/dist/*
