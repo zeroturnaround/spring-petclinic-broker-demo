@@ -16,14 +16,20 @@
 
 package org.springframework.samples.petclinic.system;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 class WelcomeController {
 
 	@GetMapping("/")
-	public String welcome() {
+	public String welcome(Model model) throws UnknownHostException {
+		String env = System.getenv().getOrDefault("ENV", "").toUpperCase();
+		model.addAttribute("welcomeMessage", String.format("Welcome to the petclinic running in container %s)!", env));
 		return "welcome";
 	}
 
