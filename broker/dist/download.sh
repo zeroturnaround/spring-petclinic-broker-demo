@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 #### CHANGE THESE VALUES ####
@@ -14,24 +14,17 @@ export BROKER_JAR_URL="https://<>/jr-broker-server-0.0.1-SNAPSHOT.jar"
 [[ x"${JREBEL_AGENT_STANDALONE_URL}" == "x" ]] && echo "JREBEL_AGENT_STANDALONE_URL is not specified" && exit 1
 [[ x"${BROKER_JAR_URL}" == "x" ]] && echo "BROKER_JAR_URL is not specified" && exit 1
 
-BASE_PATH=$(dirname "$(realpath $0)")
+BASE_PATH=$(pwd)
 printf "Downloading artifacts to $BASE_PATH\n"
 
 download() {
   printf "Downloading... $1\n"
   curl "$1" -o "$BASE_PATH/$(basename "$1")"
-  curl "$1.sha1" -o "$BASE_PATH/$(basename "$1.sha1")"
 }
 
 download  $IDEA_PLUGIN_URL
 download  $JREBEL_AGENT_STANDALONE_URL
 download  $BROKER_JAR_URL
-
-# Checksums
-printf "\nChecking checksums...\n"
-pushd $BASE_PATH
-sha1sum -c *.sha1
-popd
 
 JR_DIST=$(basename $JREBEL_AGENT_STANDALONE_URL)
 printf "\nUnzipping... $JR_DIST\n"

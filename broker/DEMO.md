@@ -21,6 +21,7 @@ export JREBEL_AGENT_STANDALONE_URL="https://<>/jrebel-dist.zip"
 export BROKER_JAR_URL="https://<>/jr-broker-server-0.0.1-SNAPSHOT.jar"
 #############################
 ```
+... and execute `cd broker/dist && ./download.sh && cd -`
 
 After successful download the directory structure should look like this:
 ```
