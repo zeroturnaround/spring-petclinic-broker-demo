@@ -53,8 +53,8 @@ broker
 ```
 
 Quick start:
-1. Install JR IntelliJ IDEA plugin from `jr-ide-intellij.zip` using [Install from disk](https://www.jetbrains.com/help/idea/installing-a-plugin-from-the-disk.html) feature. Restart the IDE if needed.
-2. Start Broker container with `docker compose -f broker.yml up`. Broker will be available at <http://localhost:7000>.
+1. Install JR IntelliJ IDEA plugin from `jr-ide-intellij.zip` using [Install from disk](https://www.jetbrains.com/help/idea/installing-a-plugin-from-the-disk.html) feature. Restart the IDE if needed. Activate JRebel in IDE.
+2. Start Broker container with `docker compose -f broker/broker.yml up`. Broker will be available at <http://localhost:7000>.
 3. Navigate to IntelliJ IDEA services tab and add a new "JRebel Broker" service. Use `http://localhost:7000` as the broker URL. No auth token.
 4. Click on the new tree node called `localhost`. Verify that on the right side panel `Connection status` displays "Connected".
 5. Enable JRebel and remote server support on IntelliJ module "spring-petclinc" using JRebel project panel.  
