@@ -8,5 +8,5 @@ services:
       - '7000:7000'
       - '8000:8080'
     environment:
-      JAVA_TOOL_OPTIONS:
+      JAVA_TOOL_OPTIONS: -Dlogging.file.name=/var/log/broker/broker.log
     entrypoint: /bin/sh -c 'java -jar /broker/dist/jr-broker-*.jar'
