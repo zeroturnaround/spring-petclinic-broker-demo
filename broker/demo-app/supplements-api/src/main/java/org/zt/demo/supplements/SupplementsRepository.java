@@ -17,7 +17,7 @@ public class SupplementsRepository {
 
 		for (String line : readContent().subList(1, readContent().size())) {
 			String[] split = line.split(",");
-			supplements.add(new Supplement(index++, split[0], Integer.valueOf(split[2]), Integer.valueOf(split[1])));
+			supplements.add(new Supplement(index++, split[0].trim(), Integer.valueOf(split[2].trim()), Integer.valueOf(split[1].trim())));
 		}
 
 		return supplements;
