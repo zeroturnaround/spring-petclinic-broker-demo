@@ -1,0 +1,31 @@
+config:
+  connector: # Public HTTP endpoint
+    url: http://localhost:7000 # Public HTTP endpoint URL embedded in web content
+    http:
+      port: 7000
+  admin-ui: # Admin API
+    http:
+      port: 8000
+    url: http://localhost:8000 # Admin API URL embedded in web content
+  zone:
+    dynamic: false
+    public: false
+
+zones:
+  frontend-dev:
+    token: frontend-dev-token
+
+  frontend-staging:
+    token: frontend-staging-token
+
+  backend:
+    token: backend-token
+
+acls:
+  ide-acl-1: # ACL for IDE
+    token: ide-token
+    zone: [frontend-dev, frontend-staging, backend]
+
+  ide-acl-2: # ACL for IDE
+    token: secret
+    zone: [ frontend-staging ]

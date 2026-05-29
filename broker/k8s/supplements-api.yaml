@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supplements-api
+  namespace: jrebel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supplements-api
+  template:
+    metadata:
+      labels:
+        app: supplements-api
+    spec:
+      containers:
+        - name: supplements-api
+          image: supplements-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BROKER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: zone-tokens
+                  key: backend
+            - name: JAVA_TOOL_OPTIONS
+              value: |
+                -XX:MaxMetaspaceSize=256M
+                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+                -agentpath:/jrebel/lib/libjrebel64.so
+                -Drebel.broker.url=http://broker.jrebel.svc.cluster.local:7000/zone/backend
+                -Drebel.broker.token=$(BROKER_TOKEN)
+                -Drebel.broker.jvm.name=supplements-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supplements-api
+  namespace: jrebel
+spec:
+  selector:
+    app: supplements-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

@@ -54,3 +54,4 @@ _site/
 /broker/broker.jar
 /broker/jrebel/
 /broker/dist/*
+/broker/config/rebelbroker.lic

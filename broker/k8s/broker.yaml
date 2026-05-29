@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: broker-state
+  namespace: jrebel
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1024Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+  namespace: jrebel
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+        - name: broker
+          image: jr-broker:latest
+          imagePullPolicy: Never
+          ports:
+            - name: ws
+              containerPort: 7000
+            - name: rest
+              containerPort: 8080
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -Dlogging.file.name=/var/log/broker/broker.log
+          volumeMounts:
+            - name: broker-state
+              mountPath: /root/.jrbroker
+            - name: broker-license
+              mountPath: /root/.jrbroker/rebelbroker.lic
+              subPath: rebelbroker.lic
+              readOnly: true
+            - name: broker-config
+              mountPath: /broker/config.yml
+              subPath: config.yml
+              readOnly: true
+      volumes:
+        - name: broker-state
+          persistentVolumeClaim:
+            claimName: broker-state
+        - name: broker-license
+          secret:
+            secretName: broker-license
+        - name: broker-config
+          configMap:
+            name: broker-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  namespace: jrebel
+spec:
+  selector:
+    app: broker
+  ports:
+    - name: ws
+      port: 7000
+      targetPort: 7000
+    - name: rest
+      port: 8080
+      targetPort: 8080

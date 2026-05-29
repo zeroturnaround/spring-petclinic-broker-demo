@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-dev
+  namespace: jrebel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-dev
+  template:
+    metadata:
+      labels:
+        app: petclinic-dev
+    spec:
+      containers:
+        - name: petclinic
+          image: spring-petclinic:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENV
+              value: dev
+            - name: BROKER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: zone-tokens
+                  key: frontend-dev
+            - name: JAVA_TOOL_OPTIONS
+              value: |
+                -XX:MaxMetaspaceSize=256M
+                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+                -agentpath:/jrebel/lib/libjrebel64.so
+                -Drebel.broker.url=http://broker.jrebel.svc.cluster.local:7000/zone/frontend-dev
+                -Drebel.broker.token=$(BROKER_TOKEN)
+                -Drebel.broker.jvm.name=petclinic-dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-dev
+  namespace: jrebel
+spec:
+  type: NodePort
+  selector:
+    app: petclinic-dev
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-staging
+  namespace: jrebel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-staging
+  template:
+    metadata:
+      labels:
+        app: petclinic-staging
+    spec:
+      containers:
+        - name: petclinic
+          image: spring-petclinic:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENV
+              value: staging
+            - name: BROKER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: zone-tokens
+                  key: frontend-staging
+            - name: JAVA_TOOL_OPTIONS
+              value: |
+                -XX:MaxMetaspaceSize=256M
+                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+                -agentpath:/jrebel/lib/libjrebel64.so
+                -Drebel.broker.url=http://broker.jrebel.svc.cluster.local:7000/zone/frontend-staging
+                -Drebel.broker.token=$(BROKER_TOKEN)
+                -Drebel.broker.jvm.name=petclinic-staging
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-staging
+  namespace: jrebel
+spec:
+  type: NodePort
+  selector:
+    app: petclinic-staging
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
